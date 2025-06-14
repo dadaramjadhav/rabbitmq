@@ -1,0 +1,37 @@
+🔁 2. Test Message Durability Across Node Restart
+Requires durable: true queues and persistent messages
+
+Steps:
+Stop the app.
+
+Publish a message manually (or use rabbitmqadmin/UI).
+
+Restart a RabbitMQ node:
+docker restart rabbit1
+Start the app again.
+
+✅ App should still consume the message.
+
+✅ Confirms:
+Quorum queue is durable, message survives node restart.
+
+
+
+🧪 3. Test Failover via HAProxy
+Steps:
+Start app.
+
+Kill the primary node:
+
+bash
+Copy
+Edit
+docker stop rabbit1
+Observe app logs — message delivery should continue.
+
+✅ Confirms:
+
+HAProxy correctly reroutes traffic to other healthy nodes
+
+Quorum queue continues working
+
