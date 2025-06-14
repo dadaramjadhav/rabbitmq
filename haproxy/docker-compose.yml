@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  rabbit1:
+    image: rabbitmq:3.12-management
+    hostname: rabbit1
+    container_name: rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit1
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "15672:15672"
+    volumes:
+      - rabbit1_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+  rabbit2:
+    image: rabbitmq:3.12-management
+    hostname: rabbit2
+    container_name: rabbit2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit2
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbit2_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+  rabbit3:
+    image: rabbitmq:3.12-management
+    hostname: rabbit3
+    container_name: rabbit3
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit3
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbit3_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+  haproxy:
+    image: haproxy:2.9
+    container_name: haproxy
+    ports:
+      - "5672:5672"   # AMQP
+      - "1936:1936"   # HAProxy stats
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - rabbit1
+      - rabbit2
+      - rabbit3
+    networks:
+      - rmq_net
+
+volumes:
+  rabbit1_data:
+  rabbit2_data:
+  rabbit3_data:
+
+networks:
+  rmq_net:
+
