@@ -1,13 +1,49 @@
 version: '3.8'
-
 services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"     # RabbitMQ messaging port
-      - "15672:15672"   # RabbitMQ Management UI
+  rabbit1:
+    image: rabbitmq:3.12-management
+    hostname: rabbit1
+    container_name: rabbit1
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit1
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbit1_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+  rabbit2:
+    image: rabbitmq:3.12-management
+    hostname: rabbit2
+    container_name: rabbit2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit2
+    volumes:
+      - rabbit2_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+  rabbit3:
+    image: rabbitmq:3.12-management
+    hostname: rabbit3
+    container_name: rabbit3
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "supersecretcookie"
+      RABBITMQ_NODENAME: rabbit@rabbit3
+    volumes:
+      - rabbit3_data:/var/lib/rabbitmq
+    networks:
+      - rmq_net
+
+networks:
+  rmq_net:
+
+volumes:
+  rabbit1_data:
+  rabbit2_data:
+  rabbit3_data:  
 
