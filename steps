@@ -1,0 +1,14 @@
+1. prepare docker-compose.yml
+2. start 
+   docker compose up -d
+3. join nodes
+# Join rabbit2 to rabbit1
+docker exec -it rabbit2 rabbitmqctl stop_app
+docker exec -it rabbit2 rabbitmqctl join_cluster rabbit@rabbit1
+docker exec -it rabbit2 rabbitmqctl start_app
+
+# Join rabbit3 to rabbit1
+docker exec -it rabbit3 rabbitmqctl stop_app
+docker exec -it rabbit3 rabbitmqctl join_cluster rabbit@rabbit1
+docker exec -it rabbit3 rabbitmqctl start_app
+
